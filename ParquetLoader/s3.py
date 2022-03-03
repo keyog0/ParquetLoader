@@ -12,7 +12,7 @@ class S3Loader(DataLoader) :
                  shuffle : bool = True,
                  random_seed : int = int((time() - int(time()))*100000),
                  columns : list = None,
-                 depth : int = 2,
+                 depth : int = 0,
                  std_out: bool = True
                  ):
         super().__init__(
