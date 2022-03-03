@@ -12,6 +12,8 @@ setup(
     download_url        = ParquetLoader.__download_url__,
     install_requires    = ParquetLoader.__install_requires__,
     packages            = find_packages(exclude = []),
+    long_description=open('./README.md', 'r', encoding='utf-8').read(),
+    long_description_content_type="text/markdown",
     keywords            = ['parquet','loader','parquetloader'],
     python_requires     = '>=3',
     package_data        = {},
