@@ -13,7 +13,7 @@ class DataLoader:
                  shuffle : bool = True,
                  random_seed : int = int((time() - int(time()))*100000),
                  columns : list = None,
-                 depth : int = 2,
+                 depth : int = 0,
                  std_out: bool = True
                  ):
         self.chunk_size = chunk_size
@@ -36,7 +36,11 @@ class DataLoader:
         else : 
             self.root_path = root_path
         
-        self.initialize()
+        try :
+            self.initialize()
+        except IndexError as e :
+            print(e)
+            print(f'"{self.root_path}" may be incorrect or it may be an empty folder.')
         
     def initialize(self) :
         path = f'{self.root_path}/{self.folder}{"/*"*self.depth}/*.parquet'
