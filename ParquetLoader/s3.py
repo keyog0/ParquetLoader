@@ -16,7 +16,8 @@ class S3Loader(DataLoader) :
                  random_seed : int = int((time() - int(time()))*100000),
                  columns : list = None,
                  depth : int = 0,
-                 std_out: bool = True
+                 std_out: bool = True,
+                 filters: list = None
                  ):
         self.client_dict = None
         if s3_endpoint_url != '' or \
@@ -33,7 +34,8 @@ class S3Loader(DataLoader) :
             random_seed=random_seed,
             columns=columns,
             depth=depth,
-            std_out=std_out
+            std_out=std_out,
+            filters=filters
             )
         
     def initialize(self) :

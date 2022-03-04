@@ -1,6 +1,6 @@
 __name__ = 'parquet-loader'
 __description__ = 'Parquet file Load and Read from minio & S3'
-__version__ = '0.0.3'
+__version__ = '0.0.4'
 __url__ = 'https://github.com/Keunyoung-Jung/ParquetLoader'
 __download_url__ = 'https://github.com/Keunyoung-Jung/ParquetLoader'
 __install_requires__ = [
