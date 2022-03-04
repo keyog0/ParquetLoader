@@ -131,3 +131,21 @@ print(data_loader.columns) # get data columns
 print(data_loader.count) # get total count
 print(data_loader.info) # get metadata infomation
 ```
+
+## 6. Customize S3 Path
+If you use minio or other obejct storage,you will use s3 parameters
+```python
+dl = S3Loader(
+    s3_endpoint_url : str = '',
+    s3_access_key : str = '',
+    s3_secret_key : str = '',
+    bucket : str = '.',
+    folder : str = 'data',
+    )
+```
+* `s3_endpoint_url`
+    * Storage endpoint url you want to use
+    * example : "http://mino-service.kubeflow:9000"
+* `s3_access_key` and `s3_secret_key`
+    * you can set s3_access_key and s3_secret_key, but I don't recommend using it
+    * it is recommended to use environment variables.

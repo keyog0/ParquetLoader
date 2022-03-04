@@ -39,8 +39,9 @@ class DataLoader:
         try :
             self.initialize()
         except IndexError as e :
-            print(e)
+            print("IndexError :",e)
             print(f'"{self.root_path}" may be incorrect or it may be an empty folder.')
+            exit()
         
     def initialize(self) :
         path = f'{self.root_path}/{self.folder}{"/*"*self.depth}/*.parquet'
