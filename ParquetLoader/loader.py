@@ -14,7 +14,8 @@ class DataLoader:
                  random_seed : int = int((time() - int(time()))*100000),
                  columns : list = None,
                  depth : int = 0,
-                 std_out: bool = True
+                 std_out: bool = True,
+                 filters: list = None
                  ):
         self.chunk_size = chunk_size
         self.cache = None
@@ -30,6 +31,8 @@ class DataLoader:
         self.fp_obj = None
         self.depth = depth
         self.random_seed = random_seed
+        self.filters = filters
+        self.check_filter()
         
         if root_path == '.' :
             self.root_path = os.getcwd()
@@ -84,7 +87,9 @@ class DataLoader:
         else:
             raise RuntimeError("generator ignored GeneratorExit")
     def generator(self):
-        for df in self.fp_obj.iter_row_groups(columns=self.select_columns):
+        for df in self.fp_obj.iter_row_groups(filters=self.filters,columns=self.select_columns):
+            if self.filters != None :
+                df = self.filtering(df)
             if self.dataset is None :
                 self.dataset = df
             else :
@@ -111,3 +116,50 @@ class DataLoader:
         self.dataset = None
         if self.std_out :
             print(self.counter,'data loaded complete!',end='\n')
+            
+    def filtering(self,df) :
+        op = ''
+        df_store = []
+        for or_part in self.filters:
+            tmp_df = df.copy()
+            for and_part in or_part :
+                col = and_part[0]
+                op = and_part[1]
+                val = and_part[2]
+                if op == '==' or op == '=' :
+                    tmp_df = tmp_df[tmp_df[col] == val]
+                elif op == '>' :
+                    tmp_df = tmp_df[tmp_df[col] > val]
+                elif op == '>=' :
+                    tmp_df = tmp_df[tmp_df[col] >= val]
+                elif op == '<' :
+                    tmp_df = tmp_df[tmp_df[col] < val]
+                elif op == '<=' :
+                    tmp_df = tmp_df[tmp_df[col] <= val]
+                elif op == '!=' :
+                    tmp_df = tmp_df[tmp_df[col] != val]
+                elif op == 'in' :
+                    tmp_df = tmp_df[tmp_df[col] in val]
+                elif op == 'not in' :
+                    tmp_df = tmp_df[tmp_df[col] not in val]
+            df_store.append(tmp_df)
+        concat_df = pd.concat(df_store)
+        return concat_df.drop_duplicates()
+    
+    def check_filter(self) :
+        try :
+            op = ''
+            if self.filters != None :
+                for or_part in self.filters :
+                    for and_part in or_part :
+                        op = and_part[1]
+                        if len(and_part) != 3 :
+                            raise  IndexError
+                        if op not in ['==','=','>','>=','<','<=','!=','in','not in'] :
+                            raise ValueError
+        except ValueError :
+            print("ValueError :",f'"{op}" is wrong operator')
+            exit()
+        except IndexError :
+            print("IndexError :",f'{self.filters} invalid filter')
+            exit()

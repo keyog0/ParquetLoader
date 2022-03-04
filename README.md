@@ -67,7 +67,8 @@ dl = DataLoader(
     random_seed : int = int((time() - int(time()))*100000),
     columns : list = None,
     depth : int = 0,
-    std_out: bool = True
+    std_out: bool = True,
+    filters: list = None
     )
 ```
 * `chunk_size`
@@ -94,6 +95,9 @@ dl = DataLoader(
 * `std_out`
     * default : True
     * You can turn off output.
+* `filters`
+    * It is used when you want get filtered dataframe, It must use 2 dim list
+    * example : `[[("column","==",10)]]`
 
 ### 4.1. Select Columns
 `columns` param is taken as a list.
@@ -149,3 +153,37 @@ dl = S3Loader(
 * `s3_access_key` and `s3_secret_key`
     * you can set s3_access_key and s3_secret_key, but I don't recommend using it
     * it is recommended to use environment variables.
+
+## 7. Get Filtered Dataframe
+It is used when you want get filtered dataframe, It must use 2 dim list
+It is built with a two-dimensional list construction. (Equal fastparquet filter)
+```python
+dl = S3Loader(
+    bucket = 'test',
+    folder = 'data',
+    filters = [[[("col1",">",10)]]]
+    )
+```
+The first list consists of an OR operation.
+```python
+# col > 10 or col2 in ["children","kids"]
+filters = [
+    [("col1",">",10)],
+    ["col2","in",["children","kids"]]
+    ] 
+```
+The second list consists of an AND operation.
+```python
+# col > 10 and col2 == "male"
+filters = [
+    [("col1",">",10),("col2","==","male")]
+    ] 
+```
+You can also mix the two to make a filter.
+```python
+# (col > 10 and col2 == "male") or col3 in ["children","kids"]
+filters = [
+    [("col1",">",10),("col2","==","male")],
+    ["col3","in",["children","kids"]]
+    ]
+```
